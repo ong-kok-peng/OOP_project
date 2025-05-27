@@ -2,42 +2,97 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 using namespace std;
 
-int main() {
-    ifstream input_file;
-    string freightFilename;
-    string textline;
+#include "Freight.h"
 
+Freight freight;
 
-    while (!input_file.is_open()) {
-        cout << "What is the file name for the Freight information?\nMake sure filename has no spaces. If theres a space put an underscore.\n";
-        cout << "To cancel, type \"CANCEL\" to terminate.\n";
-        cin >> freightFilename;
-        input_file.open(freightFilename);
+//function prototypes
+void showMenu();
+void dispInfo();
+void addInfo();
+void delInfo();
+void editInfo();
 
-        if (input_file.is_open()) {
-            cout << "File " << freightFilename << " opened successfully.\n\n";
+void showMenu() {
+    while (true) {
+        int option;
 
-            while (getline(input_file, textline)) {
-                stringstream ss(textline);
-                while (ss.good()) {
-                    string substr;
-                    getline(ss, substr, ',');
-                    cout << substr << ",";
-                }
-                cout << "\n";
-            }
-        }
-        else if (freightFilename.compare("CANCEL") == 0) {
-            cout << "Freight information file open is cancelled.\n";
+        cout << "\n-------- Please select an option ---------\n";
+        cout << "1. Display freight/cargo information.\n";
+        cout << "2. Add freight/cargo information.\n";
+        cout << "3. Delete freight/cargo information.\n";
+        cout << "4. Edit freight/cargo information.\n";
+        cout << "5. Generate flight schduele.\n";
+        cout << "6. Exit program.\n";
+
+        cin >> option;
+
+        switch (option) {
+        case 1:
+            dispInfo();
             break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 6:
+            cout << "Program is terminated.\n";
+            exit(0);
+        default:
+            cout << "Invalid option, please type any number from 1 to 6.\n";
         }
-        else {
-            cout << "File " << freightFilename << " is not found.\n\n";
+
+    }
+}
+
+void dispInfo() {
+    while (true) {
+        int option;
+
+        cout << "\n-------- Freight or Cargo? ---------\n";
+        cout << "1. Freight\n";
+        cout << "2. Cargo\n";
+        cout << "3. Go back\n";
+
+        cin >> option;
+
+        switch (option) {
+        case 1:
+            freight.dispFreightInfo();
+            break;
+        case 2:
+            break;
+        case 3:
+            showMenu();
+        default:
+            cout << "Invalid option, please type any number from 1 to 3.\n";
         }
     }
+}
+
+void addInfo() {
+
+}
+
+void delInfo() {
+
+}
+
+void editInfo() {
+
+}
+
+int main() {
+    freight.openFile();
+
+    if (freight.freightinfo.size() > 0) {
+        showMenu();
+    }
     
-    if (input_file.is_open()) { input_file.close(); }
     return 0;
 }

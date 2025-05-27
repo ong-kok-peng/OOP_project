@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Freight.cpp" />
     <ClCompile Include="mainprogram.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Freight.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
