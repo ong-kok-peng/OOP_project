@@ -1,0 +1,4 @@
+F01,Singapore,0506
+F02,Japan,0623
+F03,United States,0745
+F05,North Korea,2359
