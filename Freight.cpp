@@ -43,6 +43,24 @@ void Freight::openFile() {
     if (inputfile.is_open()) { inputfile.close(); }
 }
 
-void Freight::dispFreightInfo() {
+vector<vector<string>> Freight::getfreightInfo() {
+    return freightinfo;
+}
 
+void Freight::dispFreightInfo() {
+    cout << "\n------------ Freight Information ------------\n\n";
+    cout << "Row\tID\tDestination\tTime\n";
+    for (int row = 0; row < freightinfo.size(); row++) {
+        cout << (row + 1) << "\t";
+        for (int col = 0; col < freightinfo[row].size(); col++) {
+            //for destination string, print 2 tabs if too short
+            if (col == 1 && freightinfo[row][col].length() <= 6) {
+                cout << freightinfo[row][col] << "\t\t";
+            }
+            else {
+                cout << freightinfo[row][col] << "\t";
+            }
+        }
+        cout << "\n";
+    }
 }

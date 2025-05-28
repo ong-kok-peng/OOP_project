@@ -6,10 +6,14 @@ private:
 	string filename;
 	ifstream inputfile;
 	string textline;
-public:
 	vector<vector<string>> freightinfo;
+public:
 	void openFile();
+	vector<vector<string>> getfreightInfo();
 	void dispFreightInfo();
+	//void addFreightInfo();
+	//void delFreightInfo();
+	//void editFreightInfo();
 };
 
 #endif // !FREIGHT_H

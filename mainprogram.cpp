@@ -8,6 +8,7 @@ using namespace std;
 #include "Freight.h"
 
 Freight freight;
+//Cargo cargo;
 
 //function prototypes
 void showMenu();
@@ -30,6 +31,13 @@ void showMenu() {
 
         cin >> option;
 
+        if (cin.fail()) {
+            cout << "Invalid input. Please enter any number from 1 to 6.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
         switch (option) {
         case 1:
             dispInfo();
@@ -39,6 +47,8 @@ void showMenu() {
         case 3:
             break;
         case 4:
+            break;
+        case 5:
             break;
         case 6:
             cout << "Program is terminated.\n";
@@ -61,12 +71,20 @@ void dispInfo() {
 
         cin >> option;
 
+        if (cin.fail()) {
+            cout << "Invalid input. Please enter any number from 1 to 3.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
         switch (option) {
         case 1:
             freight.dispFreightInfo();
             break;
         case 2:
             break;
+            //cargo.dispCargoInfo();
         case 3:
             showMenu();
         default:
@@ -89,8 +107,9 @@ void editInfo() {
 
 int main() {
     freight.openFile();
+    //cargo.openFile();
 
-    if (freight.freightinfo.size() > 0) {
+    if (freight.getfreightInfo().size() > 0) {
         showMenu();
     }
     
