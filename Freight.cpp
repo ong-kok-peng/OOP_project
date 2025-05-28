@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -26,6 +27,7 @@ void Freight::openFile() {
                 while (ss.good()) {
                     string substr;
                     getline(ss, substr, ',');
+                    substr.erase(0, substr.find_first_not_of(" \t\r\n"));
                     freightinfo[a].push_back(substr);
                 }
                 a++;
@@ -62,5 +64,31 @@ void Freight::dispFreightInfo() {
             }
         }
         cout << "\n";
+    }
+}
+
+void Freight::sortFreightInfo() {
+    //validate freightinfo all timestamps are valid before sorting them by ascending timestamp 
+    bool validationOk = true;
+
+    for (int row = 0; row < freightinfo.size(); row++) {
+        try {
+            int timestamp = stoi(freightinfo[row][2]);
+            if (timestamp < 0 || timestamp > 2359) {
+                cout << "Sorting failed because freight information contains an invalid time stamp at row " << (row + 1) << ".\n";
+                validationOk = false; break;
+            }
+        }
+        catch (const invalid_argument& e) {
+            cout << "Sorting failed because freight information contains an invalid time stamp at row " << (row + 1) << ".\n";
+            validationOk = false; break;
+        }
+    }
+
+    if (validationOk) {
+        sort(freightinfo.begin(), freightinfo.end(), [](const vector<string>& a, const vector<string>& b) {
+            return stoi(a[2]) < stoi(b[2]);
+            });
+        cout << "Freight information sorted in ascending order!\n";
     }
 }

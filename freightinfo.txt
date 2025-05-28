@@ -1,4 +1,5 @@
-F01,Singapore,0506
-F02,Japan,0623
-F03,United States,0745
-F05,North Korea,2359
+F01,Taipei, 0550
+F02, California, 0755
+F03, France, 1555
+F04, Singapore, 1222
+F05, Sydney, 0930

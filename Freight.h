@@ -11,6 +11,7 @@ public:
 	void openFile();
 	vector<vector<string>> getfreightInfo();
 	void dispFreightInfo();
+	void sortFreightInfo();
 	//void addFreightInfo();
 	//void delFreightInfo();
 	//void editFreightInfo();
