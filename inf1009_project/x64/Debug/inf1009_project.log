@@ -1,4 +1,5 @@
 ﻿  Freight.cpp
+C:\Users\SGHS-PC\Documents\SIT stuff\trimester 3\inf1009 project\OOP_project\Freight.cpp(173,40): warning C4101: 'e': unreferenced local variable
   mainprogram.cpp
   Generating Code...
-  inf1009_project.vcxproj -> C:\Users\SGHS-test\Downloads\OOP_project\x64\Debug\inf1009_project.exe
+  inf1009_project.vcxproj -> C:\Users\SGHS-PC\Documents\SIT stuff\trimester 3\inf1009 project\OOP_project\x64\Debug\inf1009_project.exe
