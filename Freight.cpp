@@ -10,6 +10,10 @@ using namespace std;
 #include "Freight.h"
 
 void Freight::openFile() {
+    string filename;
+    ifstream inputfile;
+    string textline;
+
     while (!inputfile.is_open()) {
         cout << "What is the file name for the Freight information?\nMake sure filename has no spaces. If theres a space put an underscore.\n";
         cout << "To cancel, type \"EXIT\" to terminate the program.\n";
@@ -66,6 +70,93 @@ void Freight::dispFreightInfo() {
         cout << "\n";
     }
 }
+
+void Freight::addFreightInfo() {
+    string id, destination, time;
+
+    cout << "\nEnter freight ID\n-> ";
+    cin >> id;
+    cout << "Enter Destination\n-> ";
+    cin.ignore(); // to flush newline left in input buffer
+    getline(cin, destination);
+    cout << "Enter Time\n-> ";
+    cin >> time;
+
+    // Add the new row to freightinfo
+    freightinfo.push_back({ id, destination, time });
+
+    // Display updated freight info
+    cout << "New freight record added!\n\n";
+    dispFreightInfo();
+}
+
+void Freight::delFreightInfo() {
+    string id;
+
+    cout << "\nEnter freight ID\n-> ";
+    cin >> id;
+
+    // Search for the freight ID
+    int indexToDelete = -1;
+    for (int i = 0; i < freightinfo.size(); i++) {
+        if (freightinfo[i][0] == id) {
+            indexToDelete = i;
+            break;
+        }
+    }
+
+    if (indexToDelete == -1) {
+        cout << "Freight info not found! Please enter an existing freight ID\n";
+        return;
+    }
+
+    // Show info to confirm deletion
+    cout << "The following record will be deleted:\n\n";
+    cout << "ID\tDestination\tTime\n";
+    for (int col = 0; col < 3; col++) {
+        if (col == 1 && freightinfo[indexToDelete][col].length() <= 6) {
+            cout << freightinfo[indexToDelete][col] << "\t\t";
+        }
+        else {
+            cout << freightinfo[indexToDelete][col] << "\t";
+        }
+    }
+
+    while (true) {
+        cout << "\nAre you sure you want to delete the following freight record? (Y/N)\n";
+
+        char confirm;
+        cin >> confirm;
+
+        if (cin.fail()) {
+            cout << "Invalid input. Please enter 'Y' / 'y' / 'N' / 'n'.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        if (confirm == 'Y' || confirm == 'y') {
+            freightinfo.erase(freightinfo.begin() + indexToDelete);
+            cout << "Freight info deleted successfully!\n\n";
+
+            // Display updated freight info
+            dispFreightInfo();
+            break;
+        }
+        else if (confirm == 'N' || confirm == 'n') {
+            cout << "Deletion cancelled\n";
+            break;
+        }
+        else {
+            cout << "Invalid option, Please enter 'Y' / 'y' / 'N' / 'n'.\n";
+            continue;
+        }
+    }
+    
+}
+
+//void Freight::editFreightInfo() {
+//}
 
 void Freight::sortFreightInfo() {
     //validate freightinfo all timestamps are valid before sorting them by ascending timestamp 
