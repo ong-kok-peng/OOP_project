@@ -222,7 +222,37 @@ void delInfo() {
 }
 
 void editInfo() {
+    while (true) {
+        int option;
 
+        cout << "\n------------------------------------------------";
+        cout << "\n-------- Edit Info: Freight or Cargo? ---------\n";
+        cout << "1. Freight\n";
+        cout << "2. Cargo\n";
+        cout << "3. Go back\n";
+
+        cin >> option;
+
+        if (cin.fail()) {
+            cout << "Invalid input. Please enter any number from 1 to 3.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        switch (option) {
+        case 1:
+            freight.editFreightInfo();
+            break;
+        case 2:
+            //cargo.editCargoInfo();
+            break;
+        case 3:
+            showMenu();
+        default:
+            cout << "Invalid option, please type any number from 1 to 3.\n";
+        }
+    }
 }
 
 int main() {

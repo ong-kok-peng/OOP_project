@@ -11,7 +11,7 @@ public:
 	void sortFreightInfo();
 	void addFreightInfo();
 	void delFreightInfo();
-	//void editFreightInfo();
+	void editFreightInfo();
 };
 
 #endif // !FREIGHT_H

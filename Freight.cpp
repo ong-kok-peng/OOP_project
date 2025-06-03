@@ -155,8 +155,75 @@ void Freight::delFreightInfo() {
     
 }
 
-//void Freight::editFreightInfo() {
-//}
+void Freight::editFreightInfo() {
+    string id;
+    cout << "\nEnter freight ID to edit:\n-> ";
+    cin >> id;
+
+    int indexToEdit = -1;
+    for (int i = 0; i < freightinfo.size(); i++) {
+        if (freightinfo[i][0] == id) {
+            indexToEdit = i;
+            break;
+        }
+    }
+
+    if (indexToEdit == -1) {
+        cout << "Freight info not found! Please enter an existing freight ID.\n";
+        return;
+    }
+
+    cout << "Record found:\n";
+    cout << "ID\tDestination\tTime\n";
+    for (int col = 0; col < 3; col++) {
+        if (col == 1 && freightinfo[indexToEdit][col].length() <= 6) {
+            cout << freightinfo[indexToEdit][col] << "\t\t";
+        }
+        else {
+            cout << freightinfo[indexToEdit][col] << "\t";
+        }
+    }
+    cout << "\n";
+
+    int fieldChoice;
+    cout << "\nWhich field do you want to edit?\n";
+    cout << "1. ID\n";
+    cout << "2. Destination\n";
+    cout << "3. Time\n";
+    cout << "-> ";
+    cin >> fieldChoice;
+
+    if (cin.fail() || fieldChoice < 1 || fieldChoice > 3) {
+        cout << "Invalid option selected.\n";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    string newValue;
+    cout << "Enter new value: ";
+    cin.ignore(); // flush leftover newline
+    getline(cin, newValue);
+
+    // Optional: Validate time
+    if (fieldChoice == 3) {
+        try {
+            int timestamp = stoi(newValue);
+            if (timestamp < 0 || timestamp > 2359) {
+                cout << "Invalid time value. Must be between 0000 and 2359.\n";
+                return;
+            }
+        }
+        catch (...) {
+            cout << "Invalid time value. Must be numeric.\n";
+            return;
+        }
+    }
+
+    freightinfo[indexToEdit][fieldChoice - 1] = newValue;
+    cout << "Record updated successfully!\n\n";
+    dispFreightInfo();
+}
 
 void Freight::sortFreightInfo() {
     //validate freightinfo all timestamps are valid before sorting them by ascending timestamp 
