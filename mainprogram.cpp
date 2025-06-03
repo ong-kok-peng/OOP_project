@@ -8,9 +8,10 @@
 using namespace std;
 
 #include "Freight.h"
+#include "Cargo.H"
 
 Freight freight;
-//Cargo cargo;
+Cargo cargo;
 
 //function prototypes
 void showMenu();
@@ -108,9 +109,9 @@ void dispInfo() {
         case 1:
             freight.dispFreightInfo();
             break;
-        case 2:
+        case 2: 
+            cargo.dispCargoInfo();
             break;
-            //cargo.dispCargoInfo();
         case 3:
             showMenu();
         default:
@@ -143,8 +144,8 @@ void sortInfo() {
             freight.sortFreightInfo();
             break;
         case 2:
+            cargo.sortCargoInfo();
             break;
-            //cargo.sortCargoInfo();
         case 3:
             showMenu();
         default:
@@ -177,8 +178,8 @@ void addInfo() {
             freight.addFreightInfo();
             break;
         case 2:
+            cargo.addCargoInfo();
             break;
-            //cargo.sortCargoInfo();
         case 3:
             showMenu();
         default:
@@ -211,8 +212,8 @@ void delInfo() {
             freight.delFreightInfo();
             break;
         case 2:
+            cargo.delCargoInfo();
             break;
-            //cargo.sortCargoInfo();
         case 3:
             showMenu();
         default:
@@ -245,7 +246,7 @@ void editInfo() {
             freight.editFreightInfo();
             break;
         case 2:
-            //cargo.editCargoInfo();
+            cargo.editCargoInfo();
             break;
         case 3:
             showMenu();
@@ -257,7 +258,7 @@ void editInfo() {
 
 int main() {
     freight.openFile();
-    //cargo.openFile();
+    cargo.openFile();
 
     if (freight.getfreightInfo().size() > 0) {
         showMenu();
