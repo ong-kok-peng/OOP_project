@@ -68,7 +68,7 @@ void showMenu() {
             clearTerminal();
             break;
         case 8:
-            cout << "Program is terminated.\n";
+            cout << "Program is terminated. Goodbye!\n";
             exit(0);
         default:
             cout << "Invalid option, please type any number from 1 to 6.\n";
@@ -257,10 +257,16 @@ void editInfo() {
 }
 
 int main() {
-    freight.openFile();
+    //freight.openFile();
     cargo.openFile();
 
+    /*
     if (freight.getfreightInfo().size() > 0) {
+        showMenu();
+    }
+    */
+
+    if (cargo.getCargoInfo().size() > 0) {
         showMenu();
     }
     

@@ -1,2 +1,2 @@
-C05,London,0730,250kg
-C07,Paris,1720,400kg
+C05,London,0730
+C07,Paris,1720
