@@ -16,7 +16,7 @@ void Freight::openFile() {
 
     while (!inputfile.is_open()) {
         cout << "What is the file name for the Freight information?\nMake sure filename has no spaces. If theres a space put an underscore.\n";
-        cout << "To cancel, type \"EXIT\" to terminate the program.\n";
+        cout << "To cancel, type \"EXIT\" to terminate the program.\n\n-> ";
         cin >> filename;
         inputfile.open(filename);
 
@@ -32,13 +32,14 @@ void Freight::openFile() {
                     string substr;
                     getline(ss, substr, ',');
                     substr.erase(0, substr.find_first_not_of(" \t\r\n"));
+                    substr.erase(substr.find_last_not_of(" \t\r\n") + 1);
                     freightinfo[a].push_back(substr);
                 }
                 a++;
             }
         }
         else if (filename.compare("EXIT") == 0) {
-            cout << "Program is terminated.\n";
+            cout << "Program is terminated. Goodbye!\n";
             exit(0);
         }
         else {
@@ -60,7 +61,7 @@ void Freight::dispFreightInfo() {
         cout << (row + 1) << "\t";
         for (int col = 0; col < freightinfo[row].size(); col++) {
             //for destination string, print 2 tabs if too short
-            if (col == 1 && freightinfo[row][col].length() <= 6) {
+            if (col == 1 && freightinfo[row][col].length() <= 7) {
                 cout << freightinfo[row][col] << "\t\t";
             }
             else {
@@ -72,22 +73,68 @@ void Freight::dispFreightInfo() {
 }
 
 void Freight::addFreightInfo() {
-    string id, destination, time;
+    string freightID, destination, time;
+    string textline;
 
-    cout << "\nEnter freight ID\n-> ";
-    cin >> id;
-    cout << "Enter Destination\n-> ";
-    cin.ignore(); // to flush newline left in input buffer
-    getline(cin, destination);
-    cout << "Enter Time\n-> ";
-    cin >> time;
+    while (true) {
+        cout << "\nEnter the freight ID, destination and time, separated with a comma in between.\n-> ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); // flush leftover newline
+        getline(cin, textline);
 
-    // Add the new row to freightinfo
-    freightinfo.push_back({ id, destination, time });
+        if (textline.empty()) {
+            cout << "Empty input. Hit enter to re-input.\n";
+        }
+        else { break; }
+    }
 
-    // Display updated freight info
-    cout << "New freight record added!\n\n";
-    dispFreightInfo();
+    stringstream ss(textline);
+    int paramcount = 0;
+
+    while (ss.good()) {
+        string substr;
+        getline(ss, substr, ',');
+        substr.erase(0, substr.find_first_not_of(" \t\r\n"));
+        substr.erase(substr.find_last_not_of(" \t\r\n") + 1);
+
+        if (paramcount == 0) { freightID = substr; }
+        else if (paramcount == 1) { destination = substr; }
+        else if (paramcount == 2) { time = substr; }
+        paramcount++;
+    }
+
+    if (paramcount == 3) {
+        //check if freight already exist
+        for (auto& row : freightinfo) {
+            if (row.size() > 0 && row[0] == freightID) {
+                cout << "A freight with ID \"" << freightID << "\" already exists.\n";
+                return;
+            }
+        }
+
+        //validate time
+        try {
+            int timestamp = stoi(time);
+            if (timestamp < 0 || timestamp > 2359) {
+                cout << "Invalid time value. Must be between 0000 and 2359.\n";
+                return;
+            }
+        }
+        catch (const invalid_argument& e) {
+            cout << "Invalid time value. Must be numeric.\n";
+            return;
+        }
+
+        // Add the new row to freightinfo
+        freightinfo.push_back({ freightID, destination, time });
+
+        // Display updated freight info
+        cout << "New freight record added!\n\n";
+        dispFreightInfo();
+    }
+    else {
+        cout << "One or more parameters is missing.\n";
+        return;
+    }
 }
 
 void Freight::delFreightInfo() {
@@ -114,7 +161,7 @@ void Freight::delFreightInfo() {
     cout << "The following record will be deleted:\n\n";
     cout << "ID\tDestination\tTime\n";
     for (int col = 0; col < 3; col++) {
-        if (col == 1 && freightinfo[indexToDelete][col].length() <= 6) {
+        if (col == 1 && freightinfo[indexToDelete][col].length() <= 7) {
             cout << freightinfo[indexToDelete][col] << "\t\t";
         }
         else {
@@ -124,6 +171,7 @@ void Freight::delFreightInfo() {
 
     while (true) {
         cout << "\nAre you sure you want to delete the following freight record? (Y/N)\n";
+        cout << "-> ";
 
         char confirm;
         cin >> confirm;
@@ -144,7 +192,7 @@ void Freight::delFreightInfo() {
             break;
         }
         else if (confirm == 'N' || confirm == 'n') {
-            cout << "Deletion cancelled\n";
+            cout << "Deletion cancelled.\n";
             break;
         }
         else {
@@ -169,14 +217,14 @@ void Freight::editFreightInfo() {
     }
 
     if (indexToEdit == -1) {
-        cout << "Freight info not found! Please enter an existing freight ID.\n";
+        cout << "Freight ID " << id << " not found! Please enter an existing freight ID.\n";
         return;
     }
 
     cout << "Record found:\n";
     cout << "ID\tDestination\tTime\n";
     for (int col = 0; col < 3; col++) {
-        if (col == 1 && freightinfo[indexToEdit][col].length() <= 6) {
+        if (col == 1 && freightinfo[indexToEdit][col].length() <= 7) {
             cout << freightinfo[indexToEdit][col] << "\t\t";
         }
         else {
@@ -185,44 +233,61 @@ void Freight::editFreightInfo() {
     }
     cout << "\n";
 
-    int fieldChoice;
-    cout << "\nWhich field do you want to edit?\n";
-    cout << "1. ID\n";
-    cout << "2. Destination\n";
-    cout << "3. Time\n";
-    cout << "-> ";
-    cin >> fieldChoice;
+    while (true) {
+        int fieldChoice;
+        cout << "\nWhich field do you want to edit?\n";
+        cout << "1. ID\n";
+        cout << "2. Destination\n";
+        cout << "3. Time\n";
+        cout << "4. Cancel edit\n";
+        cout << "-> ";
+        cin >> fieldChoice;
 
-    if (cin.fail() || fieldChoice < 1 || fieldChoice > 3) {
-        cout << "Invalid option selected.\n";
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        return;
-    }
+        if (cin.fail() || fieldChoice < 1 || fieldChoice > 4) {
+            cout << "Invalid option selected.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
 
-    string newValue;
-    cout << "Enter new value: ";
-    cin.ignore(); // flush leftover newline
-    getline(cin, newValue);
+        if (fieldChoice == 4) {
+            cout << "Edit cancelled.\n";
+            break;
+        }
 
-    // Optional: Validate time
-    if (fieldChoice == 3) {
-        try {
-            int timestamp = stoi(newValue);
-            if (timestamp < 0 || timestamp > 2359) {
-                cout << "Invalid time value. Must be between 0000 and 2359.\n";
-                return;
+        string newValue;
+        while (true) {
+            cout << "Enter new value: ";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // flush leftover newline
+            getline(cin, newValue);
+
+            if (newValue.empty()) {
+                cout << "Empty input. Hit enter to re-input.\n";
+            }
+            else { break; }
+        }
+        
+        //Validate time
+        if (fieldChoice == 3) {
+            try {
+                int timestamp = stoi(newValue);
+                if (timestamp < 0 || timestamp > 2359) {
+                    cout << "Invalid time value. Must be between 0000 and 2359.\n";
+                    continue;
+                }
+            }
+            catch (const invalid_argument& e) {
+                cout << "Invalid time value. Must be numeric.\n";
+                continue;
             }
         }
-        catch (...) {
-            cout << "Invalid time value. Must be numeric.\n";
-            return;
-        }
+
+        freightinfo[indexToEdit][fieldChoice - 1] = newValue;
+        cout << "Record updated successfully!\n\n";
+        dispFreightInfo();
+        continue;
     }
 
-    freightinfo[indexToEdit][fieldChoice - 1] = newValue;
-    cout << "Record updated successfully!\n\n";
-    dispFreightInfo();
 }
 
 void Freight::sortFreightInfo() {
@@ -247,6 +312,6 @@ void Freight::sortFreightInfo() {
         sort(freightinfo.begin(), freightinfo.end(), [](const vector<string>& a, const vector<string>& b) {
             return stoi(a[2]) < stoi(b[2]);
             });
-        cout << "Freight information sorted in ascending order!\n";
+        cout << "Freight information sorted in ascending time order!\n";
     }
 }
