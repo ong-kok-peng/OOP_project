@@ -1,28 +1,20 @@
 #ifndef CARGO_H
 #define CARGO_H
 
-#include <vector>
-#include <string>
-using namespace std;
-
 class Cargo {
 private:
-    vector<vector<string>> cargoinfo;
+    vector<vector<string>> info;
 
 public:
-    void openFile();
+    Cargo();
+    vector<vector<string>> getInfo();
 
-    vector<vector<string>> getCargoInfo();
-
-    void dispCargoInfo();
-
-    void sortCargoInfo();
-
-    void addCargoInfo();
-
-    void delCargoInfo();
-
-    void editCargoInfo();
+	virtual void openFile();
+	virtual void dispInfo();
+	virtual void sortInfo();
+	virtual void addInfo();
+	virtual void delInfo();
+	virtual void editInfo();
 };
 
 #endif // CARGO_H

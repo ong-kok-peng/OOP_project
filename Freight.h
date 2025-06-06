@@ -3,15 +3,17 @@
 
 class Freight {
 private:
-	vector<vector<string>> freightinfo;
+	vector<vector<string>> info;
 public:
-	void openFile();
-	vector<vector<string>> getfreightInfo();
-	void dispFreightInfo();
-	void sortFreightInfo();
-	void addFreightInfo();
-	void delFreightInfo();
-	void editFreightInfo();
+	Freight();
+	vector<vector<string>> getInfo();
+
+	virtual void openFile();
+	virtual void dispInfo();
+	virtual void sortInfo();
+	virtual void addInfo();
+	virtual void delInfo();
+	virtual void editInfo();
 };
 
 #endif // !FREIGHT_H

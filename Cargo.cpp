@@ -1,77 +1,102 @@
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <limits> 
-#include <iomanip>
-
 
 using namespace std;
 
 #include "cargo.h"
 
+Cargo::Cargo() {
+    //default constructor
+    info = {};
+}
+
 void Cargo::openFile() {
-    string filename;
+    string rawpath;
     ifstream inputfile;
     string textline;
 
-    while (!inputfile.is_open()) {
-        cout << "What is the file name for the Cargo information? (no spaces; use underscores if needed)\n";
-        cout << "To cancel, type \"EXIT\".\n-> ";
-        cin >> filename;
-        if (filename == "EXIT") {
-            cout << "Program is terminated. Goodbye!\n";
-            exit(0);
-        }
+    cout << "\n------------ Open Cargo Information ------------\n\n";
+    cout << "Input file path to the cargo information file:\n";
+    cout << "To go back, type \"CANCEL\".\n\n-> ";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // flush leftover newline
+    getline(cin, rawpath);
 
-        inputfile.open(filename);
-        if (inputfile.is_open()) {
-            cout << "File \"" << filename << "\" opened successfully.\n\n";
-            cargoinfo.clear();
-
-            int row = 0;
-            while (getline(inputfile, textline)) {
-                stringstream ss(textline);
-                cargoinfo.push_back({});
-                while (ss.good()) {
-                    string cell;
-                    getline(ss, cell, ',');
-                    cell.erase(0, cell.find_first_not_of(" \t\r\n"));
-                    cell.erase(cell.find_last_not_of(" \t\r\n") + 1);
-                    cargoinfo[row].push_back(cell);
-                }
-                ++row;
-            }
-        }
-        else {
-            cout << "Could not open \"" << filename << "\". Please try again.\n\n";
-        }
+    if (rawpath.compare("CANCEL") == 0) {
+        cout << "\nFile open is cancelled.\n";
+        return;
     }
+
+    filesystem::path filepath = filesystem::path(rawpath).lexically_normal();
+    filepath.make_preferred();
+
+    //validate file path
+    if (!filepath.is_absolute()) {
+        cout << "\nInvalid file path. File path must be absolute.\n";
+        return;
+    }
+    if (!filesystem::exists(filepath)) {
+        cout << "\n" << filepath << " does not exist.\n";
+        return;
+    }
+    string fileExtension = filepath.extension().string();
+    if (fileExtension.compare(".txt") != 0 && fileExtension.compare(".csv") != 0) {
+        cout << "\n" << filepath << " must be a .txt or .csv file.\n";
+        return;
+    }
+
+    inputfile.open(filepath);
 
     if (inputfile.is_open()) {
-        inputfile.close();
+        cout << "\n" << filepath << " opened successfully.\n\n";
+
+        info = {}; //erase all the information
+        int a = 0;
+        while (getline(inputfile, textline)) {
+            stringstream ss(textline);
+            info.push_back({});
+            while (ss.good()) {
+                string substr;
+                getline(ss, substr, ',');
+                substr.erase(0, substr.find_first_not_of(" \t\r\n"));
+                substr.erase(substr.find_last_not_of(" \t\r\n") + 1);
+                info[a].push_back(substr);
+            }
+            a++;
+        }
     }
+    else {
+        cout << filepath << " is not found.\n\n";
+    }
+
+    if (inputfile.is_open()) { inputfile.close(); }
 }
 
-vector<vector<string>> Cargo::getCargoInfo() {
-    return cargoinfo;
+vector<vector<string>> Cargo::getInfo() {
+    return info;
 }
 
-void Cargo::dispCargoInfo() {
-    cout << "\n--------- Cargo Information ---------\n\n";
+void Cargo::dispInfo() {
+    cout << "\n------------ Display Cargo Information ------------\n\n";
+    if (info.empty()) {
+        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        return;
+    }
 
     cout << "Row\tID\tDestination\tTime\n";
-    for (int row = 0; row < cargoinfo.size(); row++) {
+    for (int row = 0; row < info.size(); row++) {
         cout << (row + 1) << "\t";
-        for (int col = 0; col < cargoinfo[row].size(); col++) {
+        for (int col = 0; col < info[row].size(); col++) {
             //for destination string, print 2 tabs if too short
-            if (col == 1 && cargoinfo[row][col].length() <= 7) {
-                cout << cargoinfo[row][col] << "\t\t";
+            if (col == 1 && info[row][col].length() <= 7) {
+                cout << info[row][col] << "\t\t";
             }
             else {
-                cout << cargoinfo[row][col] << "\t";
+                cout << info[row][col] << "\t";
             }
         }
         cout << "\n";
@@ -79,13 +104,13 @@ void Cargo::dispCargoInfo() {
 }
 
 
-void Cargo::sortCargoInfo() {
-    if (cargoinfo.empty()) {
-        cout << "No cargo data to sort.\n";
+void Cargo::sortInfo() {
+    if (info.empty()) {
+        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
         return;
     }
 
-    sort(cargoinfo.begin(), cargoinfo.end(),
+    sort(info.begin(), info.end(),
          [](const vector<string>& A, const vector<string>& B) {
              return A[0] < B[0];
          });
@@ -93,7 +118,13 @@ void Cargo::sortCargoInfo() {
     cout << "Cargo records have been sorted by CargoID.\n";
 }
 
-void Cargo::addCargoInfo() {
+void Cargo::addInfo() {
+    cout << "\n------------ Add Cargo Information ------------\n\n";
+    if (info.empty()) {
+        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        return;
+    }
+
     string cargoID, destination, time;
     string textline;
 
@@ -125,7 +156,7 @@ void Cargo::addCargoInfo() {
 
     if (paramcount == 3) {
         //check if cargo already exist
-        for (auto& row : cargoinfo) {
+        for (auto& row : info) {
             if (row.size() > 0 && row[0] == cargoID) {
                 cout << "A cargo with ID \"" << cargoID << "\" already exists.\n";
                 return;
@@ -145,12 +176,12 @@ void Cargo::addCargoInfo() {
             return;
         }
 
-        // Add the new row to freightinfo
-        cargoinfo.push_back({ cargoID, destination, time });
+        // Add the new row to Cargoinfo
+        info.push_back({ cargoID, destination, time });
 
-        // Display updated freight info
-        cout << "New freight record added!\n\n";
-        dispCargoInfo();
+        // Display updated Cargo info
+        cout << "New Cargo record added!\n\n";
+        dispInfo();
     }
     else {
         cout << "One or more parameters is missing.\n";
@@ -158,21 +189,27 @@ void Cargo::addCargoInfo() {
     }
 }
 
-void Cargo::delCargoInfo() {
+void Cargo::delInfo() {
+    cout << "\n------------ Delete Cargo Information ------------\n\n";
+    if (info.empty()) {
+        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        return;
+    }
+
     string id;
-    cout << "\nEnter the CargoID to delete: ";
+    cout << "\nEnter the Cargo ID to delete: ";
     cin >> id;
 
     int indexToDelete = -1;
-    for (int i = 0; i < (int)cargoinfo.size(); ++i) {
-        if (cargoinfo[i][0] == id) {
+    for (int i = 0; i < (int)info.size(); ++i) {
+        if (info[i][0] == id) {
             indexToDelete = i;
             break;
         }
     }
 
     if (indexToDelete == -1) {
-        cout << "Cargo ID " << id << " not found! Please enter an existing cargo ID.\n";
+        cout << "\nCargo ID " << id << " not found! Please enter an existing cargo ID.\n";
         return;
     }
 
@@ -180,11 +217,11 @@ void Cargo::delCargoInfo() {
     cout << "The following record will be deleted:\n\n";
     cout << "ID\tDestination\tTime\n";
     for (int col = 0; col < 3; col++) {
-        if (col == 1 && cargoinfo[indexToDelete][col].length() <= 7) {
-            cout << cargoinfo[indexToDelete][col] << "\t\t";
+        if (col == 1 && info[indexToDelete][col].length() <= 7) {
+            cout << info[indexToDelete][col] << "\t\t";
         }
         else {
-            cout << cargoinfo[indexToDelete][col] << "\t";
+            cout << info[indexToDelete][col] << "\t";
         }
     }
 
@@ -198,46 +235,52 @@ void Cargo::delCargoInfo() {
             continue;
         }
         if (confirm == 'Y' || confirm == 'y') {
-            cargoinfo.erase(cargoinfo.begin() + indexToDelete);
-            cout << "Cargo record deleted.\n";
+            info.erase(info.begin() + indexToDelete);
+            cout << "\nCargo record deleted.\n";
             return;
         }
         else if (confirm == 'N' || confirm == 'n') {
-            cout << "Deletion canceled.\n";
+            cout << "\nDeletion canceled.\n";
             return;
         }
         else {
-            cout << "Please enter 'Y' or 'N'.\n";
+            cout << "\nInvalid option, Please enter 'Y' / 'y' / 'N' / 'n'.\n";
         }
     }
 }
 
-void Cargo::editCargoInfo() {
+void Cargo::editInfo() {
+    cout << "\n------------ Edit Cargo Information ------------\n\n";
+    if (info.empty()) {
+        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        return;
+    }
+
     string id;
-    cout << "\nEnter the CargoID to edit: ";
+    cout << "\nEnter the Cargo ID to edit: ";
     cin >> id;
 
     int indexToEdit = -1;
-    for (int i = 0; i < (int)cargoinfo.size(); ++i) {
-        if (cargoinfo[i][0] == id) {
+    for (int i = 0; i < (int)info.size(); ++i) {
+        if (info[i][0] == id) {
             indexToEdit = i;
             break;
         }
     }
 
     if (indexToEdit == -1) {
-        cout << "Cargo ID " << id << " not found! Please enter an existing cargo ID.\n";
+        cout << "\nCargo ID " << id << " not found! Please enter an existing cargo ID.\n";
         return;
     }
 
-    cout << "Record found:\n";
+    cout << "\nRecord found:\n";
     cout << "ID\tDestination\tTime\n";
     for (int col = 0; col < 3; col++) {
-        if (col == 1 && cargoinfo[indexToEdit][col].length() <= 7) {
-            cout << cargoinfo[indexToEdit][col] << "\t\t";
+        if (col == 1 && info[indexToEdit][col].length() <= 7) {
+            cout << info[indexToEdit][col] << "\t\t";
         }
         else {
-            cout << cargoinfo[indexToEdit][col] << "\t";
+            cout << info[indexToEdit][col] << "\t";
         }
     }
     cout << "\n";
@@ -253,25 +296,25 @@ void Cargo::editCargoInfo() {
         cin >> fieldChoice;
 
         if (cin.fail() || fieldChoice < 1 || fieldChoice > 4) {
-            cout << "Invalid option selected.\n";
+            cout << "\nInvalid option selected.\n";
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             continue;
         }
 
         if (fieldChoice == 4) {
-            cout << "Edit cancelled.\n";
+            cout << "\nEdit cancelled.\n";
             break;
         }
 
         string newValue;
         while (true) {
-            cout << "Enter new value: ";
+            cout << "\nEnter new value: ";
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // flush leftover newline
             getline(cin, newValue);
 
             if (newValue.empty()) {
-                cout << "Empty input. Hit enter to re-input.\n";
+                cout << "\nEmpty input. Hit enter to re-input.\n";
             }
             else { break; }
         }
@@ -281,19 +324,19 @@ void Cargo::editCargoInfo() {
             try {
                 int timestamp = stoi(newValue);
                 if (timestamp < 0 || timestamp > 2359) {
-                    cout << "Invalid time value. Must be between 0000 and 2359.\n";
+                    cout << "\nInvalid time value. Must be between 0000 and 2359.\n";
                     continue;
                 }
             }
             catch (const invalid_argument& e) {
-                cout << "Invalid time value. Must be numeric.\n";
+                cout << "\nInvalid time value. Must be numeric.\n";
                 continue;
             }
         }
 
-        cargoinfo[indexToEdit][fieldChoice - 1] = newValue;
-        cout << "Record updated successfully!\n\n";
-        dispCargoInfo();
+        info[indexToEdit][fieldChoice - 1] = newValue;
+        cout << "\nRecord updated successfully!\n\n";
+        dispInfo();
         continue;
     }
 
