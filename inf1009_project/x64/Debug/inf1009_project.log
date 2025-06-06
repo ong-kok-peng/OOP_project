@@ -1,5 +1,5 @@
-﻿  Freight.cpp
-C:\Users\SGHS-PC\Documents\SIT stuff\trimester 3\inf1009 project\OOP_project\Freight.cpp(173,40): warning C4101: 'e': unreferenced local variable
+﻿  Schedule.cpp
   mainprogram.cpp
   Generating Code...
-  inf1009_project.vcxproj -> C:\Users\SGHS-PC\Documents\SIT stuff\trimester 3\inf1009 project\OOP_project\x64\Debug\inf1009_project.exe
+  LINK : C:\Users\temp\Documents\OOP_project\x64\Debug\inf1009_project.exe not found or not built by the last incremental link; performing full link
+  inf1009_project.vcxproj -> C:\Users\temp\Documents\OOP_project\x64\Debug\inf1009_project.exe
