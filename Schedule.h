@@ -9,10 +9,16 @@ private:
 	const static string FREIGHT_MODE; //name macro for freight mode
 	const static string CARGO_MODE; //name macro for cargo mode
 	string dataMode;
+
+	vector<vector<string>> pairedFlights;
+	vector<vector<string>> unpairedCargo;
+	vector<vector<string>> unpairedFreight;
+	bool isScheduleGenerated;
 public:
 	Schedule();
 	void gotoDataMode(int);
 	void showDataMenu();
+	void clearTerminal();
 
 	void openFile() override;
 	void dispInfo() override;
@@ -21,6 +27,9 @@ public:
 	void delInfo() override;
 	void editInfo() override;
 
+	void generateSchedule();
+	void dispSchedule();
+	void saveSchedule();
 };
 
 #endif // !SCHEDULE_H
