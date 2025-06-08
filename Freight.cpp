@@ -11,7 +11,7 @@ using namespace std;
 #include "Freight.h"
 
 Freight::Freight() {
-    //default constructor
+    //default constructor, initialize variables
     info = {};
 }
  
@@ -54,7 +54,7 @@ void Freight::openFile() {
     if (inputfile.is_open()) {
         cout << "\n" << filepath << " opened successfully.\n\n";
             
-        info = {}; //erase all the information
+        info.clear(); //erase all the information
         int a = 0;
         while (getline(inputfile, textline)) {
             stringstream ss(textline);
@@ -99,11 +99,12 @@ void Freight::dispInfo() {
         }
     }
     else {
-        cout << "\nFreight information is not loaded. Open the freight information file first.\n";
+        cout << "Freight information is not loaded. Open the freight information file first.\n";
     }
 }
 
 void Freight::sortInfo() {
+    cout << "\n------------ Sort Freight Information ------------\n\n";
     if (info.size() > 0) {
         //validate info all timestamps are valid before sorting them by ascending timestamp 
         bool validationOk = true;
@@ -126,11 +127,11 @@ void Freight::sortInfo() {
             sort(info.begin(), info.end(), [](const vector<string>& a, const vector<string>& b) {
                 return stoi(a[2]) < stoi(b[2]);
                 });
-            cout << "\nFreight information sorted in ascending time order!\n";
+            cout << "Freight information sorted in ascending time order!\n";
         }
     }
     else {
-        cout << "\nFreight information not loaded. Open the freight information file first.\n";
+        cout << "Freight information not loaded. Open the freight information file first.\n";
     }
 }
 
@@ -141,9 +142,15 @@ void Freight::addInfo() {
         string textline;
 
         while (true) {
-            cout << "\nEnter the freight ID, destination and time, separated with a comma in between.\n-> ";
+            cout << "\nEnter the freight ID, destination and time, separated with a comma in between.\n";
+            cout << "To go back, type \"CANCEL\".\n\n-> ";
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // flush leftover newline
             getline(cin, textline);
+
+            if (textline.compare("CANCEL") == 0) {
+                cout << "\nAdd freight is cancelled.\n";
+                return;
+            }
 
             if (textline.empty()) {
                 cout << "Empty input. Hit enter to re-input.\n";
@@ -196,12 +203,12 @@ void Freight::addInfo() {
             dispInfo();
         }
         else {
-            cout << "\nOne or more parameters is missing.\n";
+            cout << "Invalid input, or one or more parameters is missing.\n";
             return;
         }
     }
     else {
-        cout << "\nFreight information is not loaded. Open the freight information file first.\n";
+        cout << "Freight information is not loaded. Open the freight information file first.\n";
     }
 }
 
@@ -271,7 +278,7 @@ void Freight::delInfo() {
         }
     }
     else {
-        cout << "\nFreight information is not loaded. Open the freight information file first.\n";
+        cout << "Freight information is not loaded. Open the freight information file first.\n";
     }
 }
 
@@ -363,7 +370,7 @@ void Freight::editInfo() {
         }
     }
     else {
-        cout << "\nFreight information is not loaded. Open the freight information file first.\n";
+        cout << "Freight information is not loaded. Open the freight information file first.\n";
     }
 
 }

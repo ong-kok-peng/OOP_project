@@ -11,7 +11,7 @@ using namespace std;
 #include "cargo.h"
 
 Cargo::Cargo() {
-    //default constructor
+    //default constructor, initialize variables
     info = {};
 }
 
@@ -54,7 +54,7 @@ void Cargo::openFile() {
     if (inputfile.is_open()) {
         cout << "\n" << filepath << " opened successfully.\n\n";
 
-        info = {}; //erase all the information
+        info.clear(); //erase all the information
         int a = 0;
         while (getline(inputfile, textline)) {
             stringstream ss(textline);
@@ -83,7 +83,7 @@ vector<vector<string>> Cargo::getInfo() {
 void Cargo::dispInfo() {
     cout << "\n------------ Display Cargo Information ------------\n\n";
     if (info.empty()) {
-        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        cout << "Cargo information is not loaded. Open the Cargo information file first.\n";
         return;
     }
 
@@ -105,8 +105,9 @@ void Cargo::dispInfo() {
 
 
 void Cargo::sortInfo() {
+    cout << "\n------------ Sort Cargo Information ------------\n\n";
     if (info.empty()) {
-        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        cout << "Cargo information is not loaded. Open the Cargo information file first.\n";
         return;
     }
 
@@ -121,7 +122,7 @@ void Cargo::sortInfo() {
 void Cargo::addInfo() {
     cout << "\n------------ Add Cargo Information ------------\n\n";
     if (info.empty()) {
-        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        cout << "Cargo information is not loaded. Open the Cargo information file first.\n";
         return;
     }
 
@@ -129,9 +130,15 @@ void Cargo::addInfo() {
     string textline;
 
     while (true) {
-        cout << "\nEnter the cargo ID, destination and time, separated with a comma in between.\n-> ";
+        cout << "\nEnter the cargo ID, destination and time, separated with a comma in between.\n";
+        cout << "To go back, type \"CANCEL\".\n\n-> ";
         cin.ignore(numeric_limits<streamsize>::max(), '\n'); // flush leftover newline
         getline(cin, textline);
+
+        if (textline.compare("CANCEL") == 0) {
+            cout << "\nAdd cargo is cancelled.\n";
+            return;
+        }
 
         if (textline.empty()) {
             cout << "Empty input. Hit enter to re-input.\n";
@@ -184,7 +191,7 @@ void Cargo::addInfo() {
         dispInfo();
     }
     else {
-        cout << "One or more parameters is missing.\n";
+        cout << "Invalid input, or one or more parameters is missing.\n";
         return;
     }
 }
@@ -192,7 +199,7 @@ void Cargo::addInfo() {
 void Cargo::delInfo() {
     cout << "\n------------ Delete Cargo Information ------------\n\n";
     if (info.empty()) {
-        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        cout << "Cargo information is not loaded. Open the Cargo information file first.\n";
         return;
     }
 
@@ -252,7 +259,7 @@ void Cargo::delInfo() {
 void Cargo::editInfo() {
     cout << "\n------------ Edit Cargo Information ------------\n\n";
     if (info.empty()) {
-        cout << "\nCargo information is not loaded. Open the Cargo information file first.\n";
+        cout << "Cargo information is not loaded. Open the Cargo information file first.\n";
         return;
     }
 
