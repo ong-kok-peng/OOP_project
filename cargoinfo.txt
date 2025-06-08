@@ -1,2 +1,4 @@
 C05,London,0730
-C07,Paris,1720
+C07,France,1555
+C15,Sydney,0930
+C25,Sydney,0930

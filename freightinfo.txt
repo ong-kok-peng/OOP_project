@@ -1,5 +1,6 @@
-F01,Taipei, 0550
+F01, Taipei, 0550
 F02, California, 0755
 F03, France, 1555
 F04, Singapore, 1222
 F05, Sydney, 0930
+F08, Sydney, 0930
